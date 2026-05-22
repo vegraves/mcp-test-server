@@ -1,4 +1,4 @@
-# MCP Test Server
+# MCP Starter Server
 
 A simple MCP server with three test tools: `echo`, `add`, and `get_time`.
 

@@ -1,7 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { add, subtract, multiply, divide } from "./calculator.js";
+import { registerCalculatorTools } from "./tools/calculator.js";
+import { registerUserTools } from "./tools/user.js";
 
 const server = new McpServer({
   name: "mcp-test-server",
@@ -19,66 +20,6 @@ server.registerTool(
   async ({ message }) => ({
     content: [{ type: "text", text: message }],
   })
-);
-
-server.registerTool(
-  "add",
-  {
-    description: "Adds two numbers together",
-    inputSchema: {
-      a: z.number().describe("First number"),
-      b: z.number().describe("Second number"),
-    },
-  },
-  async ({ a, b }) => ({
-    content: [{ type: "text", text: String(add(a, b)) }],
-  })
-);
-
-server.registerTool(
-  "subtract",
-  {
-    description: "Subtracts b from a",
-    inputSchema: {
-      a: z.number().describe("First number"),
-      b: z.number().describe("Second number"),
-    },
-  },
-  async ({ a, b }) => ({
-    content: [{ type: "text", text: String(subtract(a, b)) }],
-  })
-);
-
-server.registerTool(
-  "multiply",
-  {
-    description: "Multiplies two numbers",
-    inputSchema: {
-      a: z.number().describe("First number"),
-      b: z.number().describe("Second number"),
-    },
-  },
-  async ({ a, b }) => ({
-    content: [{ type: "text", text: String(multiply(a, b)) }],
-  })
-);
-
-server.registerTool(
-  "divide",
-  {
-    description: "Divides a by b",
-    inputSchema: {
-      a: z.number().describe("Dividend"),
-      b: z.number().describe("Divisor (cannot be zero)"),
-    },
-  },
-  async ({ a, b }) => {
-    try {
-      return { content: [{ type: "text", text: String(divide(a, b)) }] };
-    } catch (e) {
-      return { content: [{ type: "text", text: e.message }], isError: true };
-    }
-  }
 );
 
 server.registerTool(
@@ -108,28 +49,16 @@ server.registerTool(
   {
     description: "Returns a greeting for a given name",
     inputSchema: {
-      name: z.string().describe("Name to greet"),
+      name: z.string().trim().min(1).max(50).describe("Name to greet (1-50 characters)"),
     },
   },
   async ({ name }) => ({
     content: [{ type: "text", text: `Hello, ${name}!` }],
   })
 );
-server.registerTool(
-  "register_user",
-  {
-    description: "Validates and registers a new user",
-    inputSchema: {
-      name: z.string().trim().min(2).max(50).describe("Full name (2-50 characters)"),
-      email: z.string().trim().email().describe("Valid email address"),
-      password: z.string().min(8).regex(/[A-Z]/, "Must contain uppercase").regex(/[0-9]/, "Must contain a number").describe("Password (min 8 chars, 1 uppercase, 1 number)"),
-      age: z.number().int().min(18).max(120).describe("Age (must be 18 or older)"),
-    },
-  },
-  async ({ name, email, password, age }) => ({
-    content: [{ type: "text", text: `User registered successfully: ${name} (${email}), age ${age}` }],
-  })
-);
+
+registerCalculatorTools(server);
+registerUserTools(server);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);

@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { add, subtract, multiply, divide } from "./calculator.js";
 
 const server = new McpServer({
   name: "mcp-test-server",
@@ -30,8 +31,54 @@ server.registerTool(
     },
   },
   async ({ a, b }) => ({
-    content: [{ type: "text", text: String(a + b) }],
+    content: [{ type: "text", text: String(add(a, b)) }],
   })
+);
+
+server.registerTool(
+  "subtract",
+  {
+    description: "Subtracts b from a",
+    inputSchema: {
+      a: z.number().describe("First number"),
+      b: z.number().describe("Second number"),
+    },
+  },
+  async ({ a, b }) => ({
+    content: [{ type: "text", text: String(subtract(a, b)) }],
+  })
+);
+
+server.registerTool(
+  "multiply",
+  {
+    description: "Multiplies two numbers",
+    inputSchema: {
+      a: z.number().describe("First number"),
+      b: z.number().describe("Second number"),
+    },
+  },
+  async ({ a, b }) => ({
+    content: [{ type: "text", text: String(multiply(a, b)) }],
+  })
+);
+
+server.registerTool(
+  "divide",
+  {
+    description: "Divides a by b",
+    inputSchema: {
+      a: z.number().describe("Dividend"),
+      b: z.number().describe("Divisor (cannot be zero)"),
+    },
+  },
+  async ({ a, b }) => {
+    try {
+      return { content: [{ type: "text", text: String(divide(a, b)) }] };
+    } catch (e) {
+      return { content: [{ type: "text", text: e.message }], isError: true };
+    }
+  }
 );
 
 server.registerTool(

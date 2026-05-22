@@ -68,6 +68,22 @@ server.registerTool(
     content: [{ type: "text", text: `Hello, ${name}!` }],
   })
 );
+server.registerTool(
+  "register_user",
+  {
+    description: "Validates and registers a new user",
+    inputSchema: {
+      name: z.string().min(2).max(50).describe("Full name (2-50 characters)"),
+      email: z.string().email().describe("Valid email address"),
+      password: z.string().min(8).regex(/[A-Z]/, "Must contain uppercase").regex(/[0-9]/, "Must contain a number").describe("Password (min 8 chars, 1 uppercase, 1 number)"),
+      age: z.number().int().min(18).max(120).describe("Age (must be 18 or older)"),
+    },
+  },
+  async ({ name, email, password, age }) => ({
+    content: [{ type: "text", text: `User registered successfully: ${name} (${email}), age ${age}` }],
+  })
+);
+
 const transport = new StdioServerTransport();
 await server.connect(transport);
 console.error("MCP test server running on stdio");

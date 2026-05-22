@@ -56,6 +56,18 @@ server.registerTool(
   })
 );
 
+server.registerTool(
+  "greet",
+  {
+    description: "Returns a greeting for a given name",
+    inputSchema: {
+      name: z.string().describe("Name to greet"),
+    },
+  },
+  async ({ name }) => ({
+    content: [{ type: "text", text: `Hello, ${name}!` }],
+  })
+);
 const transport = new StdioServerTransport();
 await server.connect(transport);
 console.error("MCP test server running on stdio");

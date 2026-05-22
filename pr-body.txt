@@ -1,9 +1,0 @@
-## Summary
-- Added quickstart guide with 4 steps to get up and running quickly
-- Updated tools table to include `hello_world` and `greet` tools
-
-## Test plan
-- [ ] Verify quickstart steps work on a fresh clone
-- [ ] Confirm all 5 tools are listed in the tools table
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)

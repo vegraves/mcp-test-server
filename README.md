@@ -1,44 +1,54 @@
 # MCP Test Server
 
-A simple MCP server with three test tools: `echo`, `add`, and `get_time`.
+A Node.js MCP server with 9 tools for testing MCP integrations with Claude Desktop.
 
-## Quickstart
+## Requirements
 
-1. **Install dependencies**
+- [Node.js](https://nodejs.org) v18 or higher
+- [Claude Desktop](https://claude.ai/download) (for MCP integration)
+
+## Installation
+
+1. **Clone the repo**
    ```bash
-   cd c:\sampleproject
+   git clone https://github.com/vegraves/mcp-test-server.git
+   cd mcp-test-server
+   ```
+
+2. **Install dependencies**
+   ```bash
    npm install
    ```
 
-2. **Start the server**
+3. **Start the server**
    ```bash
-   node index.js
+   npm start
    ```
 
-3. **Test a tool**
+## Quickstart
+
+1. **Run the tests**
+   ```bash
+   npm test
+   ```
+
+2. **Test a tool manually**
    ```bash
    node test-echo.mjs
    ```
 
-4. **Add to Claude Desktop** — edit `%APPDATA%\Claude\claude_desktop_config.json`:
+3. **Add to Claude Desktop** — edit `%APPDATA%\Claude\claude_desktop_config.json`:
    ```json
    {
      "mcpServers": {
        "test-server": {
          "command": "node",
-         "args": ["c:\\sampleproject\\index.js"]
+         "args": ["c:\\mcp-test-server\\index.js"]
        }
      }
    }
    ```
    Then restart Claude Desktop and ask it to use any tool.
-
-## Setup
-
-```bash
-cd c:\sampleproject
-npm install
-```
 
 ## Test with MCP Inspector
 
@@ -48,29 +58,16 @@ npx @modelcontextprotocol/inspector node index.js
 
 This opens a browser UI where you can call each tool interactively.
 
-## Add to Claude Desktop
-
-In `%APPDATA%\Claude\claude_desktop_config.json`, add:
-
-```json
-{
-  "mcpServers": {
-    "test-server": {
-      "command": "node",
-      "args": ["c:\\sampleproject\\index.js"]
-    }
-  }
-}
-```
-
-Then restart Claude Desktop.
-
 ## Tools
 
-| Tool          | Description                    | Inputs          |
-|---------------|--------------------------------|-----------------|
-| `echo`        | Echoes back a message          | `message` (str) |
-| `add`         | Adds two numbers               | `a`, `b` (num)  |
-| `get_time`    | Returns current ISO timestamp  | _(none)_        |
-| `hello_world` | Returns "Hello, World!"        | _(none)_        |
-| `greet`       | Returns a personalized greeting| `name` (str)    |
+| Tool            | Description                         | Inputs                                  |
+|-----------------|-------------------------------------|-----------------------------------------|
+| `echo`          | Echoes back a message               | `message` (str)                         |
+| `add`           | Adds two numbers                    | `a`, `b` (num)                          |
+| `subtract`      | Subtracts b from a                  | `a`, `b` (num)                          |
+| `multiply`      | Multiplies two numbers              | `a`, `b` (num)                          |
+| `divide`        | Divides a by b                      | `a`, `b` (num)                          |
+| `get_time`      | Returns current ISO timestamp       | _(none)_                                |
+| `hello_world`   | Returns "Hello, World!"             | _(none)_                                |
+| `greet`         | Returns a personalized greeting     | `name` (str)                            |
+| `register_user` | Validates and registers a new user  | `name`, `email`, `password`, `age`      |
